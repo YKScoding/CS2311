@@ -46,7 +46,7 @@ int main() {
     
     bool match;
     for (int position = 0; position < 256; ++position) {
-        // if (header[position] == ' ') break;
+        if (header[position] == '\0') break;
         if (check[0] == header[position]) cout << headerref[position+1] << endl;
     }
     
