@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include <string>
+#include <cstring>
 
 using namespace std;
 
@@ -16,7 +16,7 @@ string dectobin(int num, int length) {
     return binary;
 }
 
-int bintodec(string bin) { //simple implementation, since the input is just 3 bits anyway
+int bintodec(string bin) { // simple implementation, since the input is just 3 bits anyway
     int decimal = 0; 
     if (bin[0] == '1') decimal += 4;
     if (bin[1] == '1') decimal += 2;
@@ -28,48 +28,69 @@ int bintodec(string bin) { //simple implementation, since the input is just 3 bi
 int main() {
 
     
-    //creating the header reference
-    string headerref[256][6]; //array range from 1-256, 0-5
+    // creating the header reference
+    string headerref[256][6]; // array range from 1-256, 0-5
     int count = 1;
     int power = 1;
     int x = 1;
     int y = 1;
     for (x = 1; x < 256 && count < 256;) {
         for (y = 1; y <= x && count < 256; ++y) {
-            //cout << power << "," << x << "," << y << "," << count << endl;  //debug
-            //x=length of binary, y=binary representation, count=index
+            // cout << power << "," << x << "," << y << "," << count << endl;  //debug
+            // x=length of binary, y=binary representation, count=index
             headerref[count][1] = dectobin(y,power);
             headerref[count][2] = to_string(power);
             headerref[count][3] = to_string(x);
             headerref[count][4] = to_string(y);
             headerref[count][5] = to_string(count);
-            //cout << headerref[count] << endl; //debug
+            // cout << headerref[count] << endl; //debug
             ++count;
         }
         ++power;
-        //x = (1 << power) - 1; //manual increments to generate the weird key string.
+        // x = (1 << power) - 1; //manual increments to generate the weird key string.
         x = x * 2 + 1;
     }
 
-    //done creating the header ref, start io&proc
-    string header;
-    string code;
+    // done creating the header ref, start io&proc
+    char header[257];
+    char code[65536]; // skill issue
 
     cout << "\nEnter Header: \n";
-    getline(cin, header);
-    //header = "n(X+# $90\"?";
+    cin.getline(header,256);
+    // getline(cin, header);
+    // header = "n(X+# $90\"?";
+    int headerlength;
+    for (int i = 0; i < 256; ++i) {
+        if (header[i] == '\0') {
+            headerlength = i;
+            break;
+        }
+    }
     cout << "\nEnter code:\n";
-    getline(cin, code);
-    //code = "011001010100000001100111110000101000000";
+    cin.getline(code,65535);
+    // getline(cin, code);
+    // code = "011001010100000001100111110000101000000";
+    int codelength;
+    for (int i = 0; i < 256; ++i) {
+        if (code[i] == '\0') {
+            codelength = i;
+            break;
+        }
+    }
     cout << endl;
-    //add the header to headerref array
+    // add the header to headerref array
     /*  n   1
         (   01
         X   10, etc
     */
-    for (count = 0; count < header.length(); ++count) {
+    
+    // get lengths of header and code.
+    
+    
+    
+    for (count = 0; count < headerlength; ++count) {
         headerref[count+1][0] = header[count];
-        //headerref[count][6] = '0';
+        // headerref[count][6] = '0';
     }
 
 
@@ -81,13 +102,13 @@ int main() {
     
 
 
-    //parse the code.
+    // parse the code.
     string key_length_str, key;
     int key_length = 0; // key_length 0 indicates that we dont have the key length.
     int pointer = 0;
     bool eos = false;
-
-    while (pointer <= code.length()) {
+    
+    while (pointer <= codelength) {
         if (!key_length) { // 1: get the keylength if we dont have it.
             key_length_str = "";
             for (int i = 0; i < 3; ++i) {
@@ -96,7 +117,7 @@ int main() {
             pointer += 3; // advancing the pointer by 3 ONLY when determining key length
             key_length = bintodec(key_length_str); 
         }
-        //debug block A 
+        // debug block A 
         /*
             cout << endl;
             cout << "Block A";
@@ -116,7 +137,7 @@ int main() {
             key += code [pointer + i];
         }
         
-        //debug block B
+        // debug block B
         /*
             cout << endl;
             cout << "Block B";
@@ -133,7 +154,7 @@ int main() {
             continue;
         }
 
-        //debug block C
+        // debug block C
         /*
             cout << endl;
             cout << "Block C";
@@ -145,7 +166,7 @@ int main() {
         //^^^^^^^^^^^^^debug block
 
         string ref;
-        for (int i = 0; i <= header.length(); ++i) {
+        for (int i = 0; i <= headerlength; ++i) {
             ref = headerref[i][1];
             if (headerref[i][2] != to_string(key_length)) {continue;}
             //cout << endl << ref;
@@ -160,13 +181,12 @@ int main() {
 	  	for(j=0;j<6;++j) {
 	  		cout<<j<<": "<<"\t"<<headerref[i][j]<< "\t";}
 		cout<<endl;
-    }*/ //debug: showing the array
+    }*/ // debug: showing the array
 
     return 0;
 }
 
 // n(X+# $90\"?     011001010100000001100111110000101000000
-
 
 
 
