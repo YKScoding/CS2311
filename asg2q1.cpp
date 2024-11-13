@@ -18,7 +18,7 @@ string dectobin(int num, int length) {
 
 int main() {
     //creating a preset header reference
-    string headerref[256]; //array starts from 1
+    string headerref[256]; //string array starts from 1
     int count = 1;
     int power = 1;
     for (int i = 1; i < 256 && count < 256;) {
@@ -34,18 +34,24 @@ int main() {
     }
     
     //done creating the header ref, start io&proc
-    string header;
-    string check;
+    char header[257];
+    char check[2];
 
     cout << "\nEnter Header: \n";
     // getline(cin, header);
-    cin.getline >> header;
+    cin.getline(header,256);
     cout << "\nCharacter?";
     // getline(cin, check);
-    cin.getline >> check;
-    int position = 0;
-    while ((position = header.find(check, position + 1)) != string::npos) {
-        cout << headerref[position+1] << endl;
+    cin.getline(check, 2);
+    
+    bool match;
+    for (int position = 0; position < 256; ++position) {
+        if (header[position] == ' ') break;
+        if (check[0] == header[position]) cout << headerref[position+1] << endl;
     }
+    
+    /*while ((position = header.find(check, position + 1)) != string::npos) {
+        cout << headerref[position+1] << endl;
+    }*/
     return 0;
 }
