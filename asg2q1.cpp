@@ -38,9 +38,11 @@ int main() {
     string check;
 
     cout << "\nEnter Header: \n";
-    getline(cin, header);
+    // getline(cin, header);
+    cin.getline >> header;
     cout << "\nCharacter?";
-    getline(cin, check);
+    // getline(cin, check);
+    cin.getline >> check;
     int position = 0;
     while ((position = header.find(check, position + 1)) != string::npos) {
         cout << headerref[position+1] << endl;
